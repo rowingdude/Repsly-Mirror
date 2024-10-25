@@ -5,6 +5,8 @@
 #include <json-c/json.h>
 #define ERROR_MESSAGE_SIZE 256
 
+#include "../endpoints.h"
+
 struct PriceListItem {
     int id;
     int productid;

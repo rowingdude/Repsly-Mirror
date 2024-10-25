@@ -4,14 +4,10 @@
 #include <mysql/mysql.h>
 #include <stdbool.h>
 #include <json-c/json.h>
+#include "../endpoints.h"
 
 #define ERROR_MESSAGE_SIZE 256
 
-int process_dailyworkingtime_record(MYSQL *conn, struct json_object *record);
-int process_dailyworkingtimes_batch(MYSQL *conn, const struct Endpoint *endpoint, 
-                                   struct json_object *batch, 
-                                   struct DailyWorkingTimeBatchResult *result);
-bool verify_dailyworkingtimes_batch(MYSQL *conn, int last_id, struct json_object *original_data);
 
 struct DailyWorkingTimeBatchResult {
     int first_id;
@@ -23,6 +19,15 @@ struct DailyWorkingTimeBatchResult {
     bool success;
     char error_message[ERROR_MESSAGE_SIZE];
 };
+
+
+
+int process_dailyworkingtime_record(MYSQL *conn, struct json_object *record);
+int process_dailyworkingtimes_batch(MYSQL *conn, const struct Endpoint *endpoint, 
+                                   struct json_object *batch, 
+                                   struct DailyWorkingTimeBatchResult *result);
+bool verify_dailyworkingtimes_batch(MYSQL *conn, int last_id, struct json_object *original_data);
+
 
 #endif 
 

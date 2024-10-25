@@ -3,7 +3,7 @@
 
 #include <mysql/mysql.h>
 #include <json-c/json.h>
-#include "endpoints.h"
+#include "../endpoints.h"
 #define ERROR_MESSAGE_SIZE 256
 struct VisitBatchResult {
     bool success;

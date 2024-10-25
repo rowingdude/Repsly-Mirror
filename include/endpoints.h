@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 #include <time.h>
+#include <json-c/json.h>
+#include <mysql/mysql.h>
 
 enum PaginationType {
     NONE,           
@@ -32,8 +34,8 @@ struct Endpoint {
     struct EndpointMeta meta;
 };
 
+int process_endpoint(MYSQL *conn, const struct Endpoint *endpoint);
 extern struct Endpoint endpoints[];
 extern const int NUM_ENDPOINTS;
-
 
 #endif

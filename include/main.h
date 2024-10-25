@@ -5,7 +5,7 @@
 #include <json-c/json.h>
 #include <mysql/mysql.h>
 #include <stdbool.h>
-
+#include "endpoints.h"
 #define MAX_URL_LENGTH 256
 #define MAX_BUFFER 16384
 

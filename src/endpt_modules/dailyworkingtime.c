@@ -333,7 +333,7 @@ int process_dailyworkingtime_record(MYSQL *conn, struct json_object *record) {
     return 0;
 }
 
-int process_dailyworkingtimes_batch(MYSQL *conn, const struct Endpoint *endpoint,
+int process_dailyworkingtimes_batch(MYSQL *conn, const struct Endpoint *endpoint __attribute__((unused)),
                                    struct json_object *batch,
                                    struct DailyWorkingTimeBatchResult *result) {
     // Initialize result

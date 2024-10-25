@@ -47,11 +47,11 @@ int process_endpoint(MYSQL *conn, const struct Endpoint *endpoint) {
 
     switch (endpoint->pagination_type) {
         case TIMESTAMP:
-            snprintf(url, sizeof(url), "%s%lld", endpoint->url_format, 
+            snprintf(url, sizeof(url), "%s%s", endpoint->url_format,
                     endpoint->meta.last_timestamp);
             break;
         case SKIP:
-            snprintf(url, sizeof(url), "%s%lld/%d", endpoint->url_format,
+            snprintf(url, sizeof(url), "%s%s/%d", endpoint->url_format,
                     endpoint->meta.last_timestamp, endpoint->meta.skip_count);
             break;
         case DATERANGE:
@@ -86,8 +86,6 @@ int process_endpoint(MYSQL *conn, const struct Endpoint *endpoint) {
         return -1;
     }
 
-    // Process batch based on endpoint type
-    // Note: Individual endpoint processing would be called here
 
     json_object_put(response);
     free(chunk.memory);

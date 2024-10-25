@@ -1,5 +1,6 @@
 #ifndef ENDPT_MODULES_FORMS_H
 #define ENDPT_MODULES_FORMS_H
+#include "../endpoints.h"
 
 #include <mysql/mysql.h>
 #include <stdbool.h>

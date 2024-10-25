@@ -212,7 +212,7 @@ int process_documenttype_pricelists(MYSQL *conn, int documenttypeid, struct json
    return 0;
 }
 
-int process_documenttypes_batch(MYSQL *conn, const struct Endpoint *endpoint, 
+int process_documenttypes_batch(MYSQL *conn, const struct Endpoint *endpoint __attribute__((unused)), 
                              struct json_object *batch, struct DocumentTypeBatchResult *result) {
    // Initialize result
    memset(result, 0, sizeof(struct DocumentTypeBatchResult));

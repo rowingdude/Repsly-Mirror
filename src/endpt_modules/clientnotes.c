@@ -331,7 +331,7 @@ int process_clientnote_record(MYSQL *conn, struct json_object *record) {
     return 0;
 }
 
-int process_clientnotes_batch(MYSQL *conn, const struct Endpoint *endpoint, 
+int process_clientnotes_batch(MYSQL *conn, const struct Endpoint *endpoint __attribute__((unused)), 
                             struct json_object *batch, struct ClientNoteBatchResult *result) {
     // Initialize result
     memset(result, 0, sizeof(struct ClientNoteBatchResult));

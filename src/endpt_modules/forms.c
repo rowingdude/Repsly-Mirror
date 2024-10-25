@@ -404,8 +404,9 @@ int process_formitem_record(MYSQL *conn, struct json_object *record, int formid)
    return 0;
 }
 
-int process_forms_batch(MYSQL *conn, const struct Endpoint *endpoint,
-                        struct json_object *batch, struct FormBatchResult *result) {
+int process_forms_batch(MYSQL *conn, const struct Endpoint *endpoint __attribute__((unused)),
+                       struct json_object *batch, struct FormBatchResult *result) {
+
    memset(result, 0, sizeof(struct FormBatchResult));
    
    struct json_object *meta;
