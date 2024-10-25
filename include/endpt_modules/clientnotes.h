@@ -1,8 +1,9 @@
 #ifndef CLIENTNOTES_PROCESSING_H
 #define CLIENTNOTES_PROCESSING_H
 
-#include <stdbool.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
 #include <time.h>
 #include <mysql/mysql.h>
 #include <json-c/json.h>
@@ -32,7 +33,7 @@ struct ClientNoteBatchResult {
 };
 
 // Function to log batch processing status
-bool log_batch_status(const struct ClientNoteBatchResult *result);
+static bool log_batch_status(const struct ClientNoteBatchResult *result);
 
 // Function to process a client note record
 int process_clientnote_record(MYSQL *conn, struct json_object *record);
