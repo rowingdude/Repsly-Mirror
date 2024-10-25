@@ -65,7 +65,7 @@ int process_purchaseorder_record(MYSQL *conn, struct json_object *record) {
     char originaldocumentnumber[1024] = {0};
     int metacollectiontotalcount = 0;
     int metacollectionfirstid = 0;
-    metacollectionlastid = result->last_id;
+    int metacollectionlastid = 0;
 
     // NULL indicators
     bool null_indicators[30] = {0};
@@ -706,7 +706,7 @@ int process_purchaseorder_customattributes(MYSQL *conn, int purchaseorderid,
     return 0;
 }
 
-int process_purchaseorders_batch(MYSQL *conn, const struct Endpoint *endpoint, 
+int process_purchaseorders_batch(MYSQL *conn, const struct Endpoint *endpoint __attribute__((unused)), 
                                struct json_object *batch, 
                                struct PurchaseOrderBatchResult *result) {
     // Initialize result

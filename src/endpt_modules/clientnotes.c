@@ -57,7 +57,7 @@ int process_clientnote_record(MYSQL *conn, struct json_object *record) {
     int visitid = 0;
     int metacollectiontotalcount = 0;
     int metacollectionfirstid = 0;
-    metacollectionlastid = result->last_id;
+    int metacollectionlastid = 0;
 
     // NULL indicators
     bool null_indicators[24] = {0};

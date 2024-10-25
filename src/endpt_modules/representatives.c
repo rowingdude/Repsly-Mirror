@@ -388,7 +388,7 @@ int process_representative_record(MYSQL *conn, struct json_object *record) {
     return 0;
 }
 
-int process_representatives_batch(MYSQL *conn, const struct Endpoint *endpoint,
+int process_representatives_batch(MYSQL *conn, const struct Endpoint *endpoint __attribute__((unused)),
                                 struct json_object *batch,
                                 struct RepresentativeBatchResult *result) {
     // Initialize result
@@ -466,7 +466,7 @@ int process_representatives_batch(MYSQL *conn, const struct Endpoint *endpoint,
     return 0;
 }
 
-bool verify_representatives_batch(MYSQL *conn, int last_id, struct json_object *original_data) {
+bool verify_representatives_batch(MYSQL *conn, int last_id __attribute__((unused)), struct json_object *original_data) {
     if (!conn || !original_data) return false;
 
     const char *query = "SELECT r.code, r.name, r.email, r.active, "

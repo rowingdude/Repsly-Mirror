@@ -47,7 +47,7 @@ int process_product_record(MYSQL *conn, struct json_object *record) {
    char masterproduct[256] = {0};
    int metacollectiontotalcount = 0;
    int metacollectionfirstid = 0;
-   metacollectionlastid = result->last_id;
+   int metacollectionlastid = 0;
 
    // NULL indicators
    bool null_indicators[14] = {0};
@@ -265,8 +265,12 @@ int process_product_packagingcodes(MYSQL *conn, const char *productcode,
    return 0;
 }
 
-int process_products_batch(MYSQL *conn, const struct Endpoint *endpoint, 
-                        struct json_object *batch, struct ProductBatchResult *result) {
+int process_products_batch(MYSQL *conn, 
+                                const struct Endpoint *endpoint __attribute__((unused)), 
+                                struct json_object *batch, 
+                                struct ProductBatchResult *result) {
+
+
    memset(result, 0, sizeof(struct ProductBatchResult));
    
    struct json_object *meta;
@@ -362,7 +366,9 @@ int process_products_batch(MYSQL *conn, const struct Endpoint *endpoint,
    return 0;
 }
 
-bool verify_products_batch(MYSQL *conn, int last_id, struct json_object *original_data) {
+bool verify_products_batch(MYSQL *conn, int last_id __attribute__((unused)), 
+                         struct json_object *original_data) {
+
    if (!conn || !original_data) return false;
 
    const char *query = "SELECT p.code, COUNT(ppc.packagingcode) as packaging_count "
@@ -415,7 +421,6 @@ bool verify_products_batch(MYSQL *conn, int last_id, struct json_object *origina
            if (json_object_object_get_ex(product, "Code", &code_obj)) {
                const char *json_code = json_object_get_string(code_obj);
                if (strncmp(db_code, json_code, db_code_length) == 0) {
-                   // Verify packaging codes count
                    struct json_object *packaging, *codes;
                    if (json_object_object_get_ex(product, "Packaging", &packaging) &&
                        json_object_object_get_ex(packaging, "Codes", &codes)) {

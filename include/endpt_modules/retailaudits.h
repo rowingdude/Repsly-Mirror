@@ -1,4 +1,4 @@
-// include/endpt_modules/retailaudits.h
+// endpt_modules/retailaudits.h
 #ifndef ENDPT_RETAILAUDITS_H
 #define ENDPT_RETAILAUDITS_H
 

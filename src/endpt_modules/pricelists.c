@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <time.h>
 
+
+
 bool log_batch_status(const struct PricelistBatchResult *result) {
 
    time_t now;
@@ -41,6 +43,8 @@ int process_pricelist_record(MYSQL *conn, struct json_object *record) {
    bool isdefault = false;
    bool active = false;
    bool useprices = false;
+   unsigned long db_name_length = 0;
+   // int metacollectionlastid = 0;
 
    // NULL indicators
    bool null_indicators[4] = {0};
@@ -251,7 +255,7 @@ int process_pricelistitem_record(MYSQL *conn, struct json_object *record) {
    return 0;
 }
 
-int process_pricelists_batch(MYSQL *conn, const struct Endpoint *endpoint, struct json_object *batch, struct PricelistBatchResult *result) {
+int process_pricelists_batch(MYSQL *conn, const struct Endpoint *endpoint __attribute__((unused)), struct json_object *batch, struct PricelistBatchResult *result) {
     
    memset(result, 0, sizeof(struct PricelistBatchResult));
    
@@ -343,108 +347,130 @@ int process_pricelists_batch(MYSQL *conn, const struct Endpoint *endpoint, struc
    return 0;
 }
 
-bool verify_pricelists_batch(MYSQL *conn, int last_id, struct json_object *original_data) {
-   if (!conn || !original_data) return false;
+bool verify_pricelists_batch(MYSQL *conn, int last_id __attribute__((unused)), 
+                           struct json_object *original_data) {
+    if (!conn || !original_data) {
+        return false;
+    }
 
-   const char *query = "SELECT p.id, p.name, p.isdefault, p.active, p.useprices, "
-                      "       COUNT(pi.id) AS item_count "
-                      "FROM pricelists p "
-                      "LEFT JOIN pricelistitems pi ON p.id = pi.pricelistid "
-                      "GROUP BY p.id "
-                      "ORDER BY p.id DESC LIMIT 5";
+    const char *query = "SELECT p.name, p.isdefault, p.active, p.useprices, "
+                       "COUNT(pi.id) AS item_count "
+                       "FROM pricelists p "
+                       "LEFT JOIN pricelistitems pi ON p.id = pi.pricelistid "
+                       "GROUP BY p.name, p.isdefault, p.active, p.useprices "
+                       "ORDER BY p.id DESC LIMIT 5";
 
-   MYSQL_STMT *stmt = mysql_stmt_init(conn);
-   if (!stmt) return false;
+    MYSQL_STMT *stmt = mysql_stmt_init(conn);
+    if (!stmt) {
+        return false;
+    }
 
-   if (mysql_stmt_prepare(stmt, query, strlen(query))) {
-       mysql_stmt_close(stmt);
-       return false;
-   }
+    if (mysql_stmt_prepare(stmt, query, strlen(query))) {
+        mysql_stmt_close(stmt);
+        return false;
+    }
 
-   MYSQL_BIND bind_result[6];
-   int db_id;
-   char db_name[256];
-   unsigned long db_name_length;
-   bool db_isdefault;
-   bool db_active;
-   bool db_useprices;
-   long long db_item_count;
-   memset(bind_result, 0, sizeof(bind_result));
+    // Result binding structures
+    MYSQL_BIND bind_result[5];
+    char db_name[256];
+    bool db_isdefault;
+    bool db_active;
+    bool db_useprices;
+    long long db_item_count;
+    unsigned long db_name_length = 0;
+    bool db_name_is_null = false;
+    
+    memset(bind_result, 0, sizeof(bind_result));
+    memset(db_name, 0, sizeof(db_name));
 
-   bind_result[0].buffer_type = MYSQL_TYPE_LONG;
-   bind_result[0].buffer = &db_id;
+    // Set up the bindings
+    bind_result[0].buffer_type = MYSQL_TYPE_STRING;
+    bind_result[0].buffer = db_name;
+    bind_result[0].buffer_length = sizeof(db_name) - 1;  // Leave room for null terminator
+    bind_result[0].length = &db_name_length;
+    bind_result[0].is_null = &db_name_is_null;
 
-   bind_result[1].buffer_type = MYSQL_TYPE_STRING;
-   bind_result[1].buffer = db_name;
-   bind_result[1].buffer_length = sizeof(db_name);
+    bind_result[1].buffer_type = MYSQL_TYPE_TINY;
+    bind_result[1].buffer = &db_isdefault;
 
-   bind_result[2].buffer_type = MYSQL_TYPE_TINY;
-   bind_result[2].buffer = &db_isdefault;
+    bind_result[2].buffer_type = MYSQL_TYPE_TINY;
+    bind_result[2].buffer = &db_active;
 
-   bind_result[3].buffer_type = MYSQL_TYPE_TINY;
-   bind_result[3].buffer = &db_active;
+    bind_result[3].buffer_type = MYSQL_TYPE_TINY;
+    bind_result[3].buffer = &db_useprices;
 
-   bind_result[4].buffer_type = MYSQL_TYPE_TINY;
-   bind_result[4].buffer = &db_useprices;
+    bind_result[4].buffer_type = MYSQL_TYPE_LONGLONG;
+    bind_result[4].buffer = &db_item_count;
 
-   bind_result[5].buffer_type = MYSQL_TYPE_LONGLONG;
-   bind_result[5].buffer = &db_item_count;
+    if (mysql_stmt_bind_result(stmt, bind_result)) {
+        mysql_stmt_close(stmt);
+        return false;
+    }
 
-   if (mysql_stmt_bind_result(stmt, bind_result)) {
-       mysql_stmt_close(stmt);
-       return false;
-   }
+    if (mysql_stmt_execute(stmt)) {
+        mysql_stmt_close(stmt);
+        return false;
+    }
 
-   if (mysql_stmt_execute(stmt)) {
-       mysql_stmt_close(stmt);
-       return false;
-   }
+    bool verification_passed = true;
+    while (mysql_stmt_fetch(stmt) == 0) {
+        bool found = false;
+        int array_len = json_object_array_length(original_data);
+        
+        if (!db_name_is_null && db_name_length < sizeof(db_name)) {
+            db_name[db_name_length] = '\0';
+        }
+        
+        for (int i = 0; i < array_len && !found; i++) {
+            struct json_object *pricelist = json_object_array_get_idx(original_data, i);
+            if (!pricelist) continue;
 
-   bool verification_passed = true;
-   while (mysql_stmt_fetch(stmt) == 0) {
-       bool found = false;
-       int array_len = json_object_array_length(original_data);
-       
-       for (int i = 0; i < array_len && !found; i++) {
-           struct json_object *pricelist = json_object_array_get_idx(original_data, i);
-           struct json_object *name_obj, *isdefault_obj, *active_obj, *useprices_obj, *items;
-           
-           if (json_object_object_get_ex(pricelist, "Name", &name_obj) &&
-               json_object_object_get_ex(pricelist, "IsDefault", &isdefault_obj) &&
-               json_object_object_get_ex(pricelist, "Active", &active_obj) &&
-               json_object_object_get_ex(pricelist, "UsesPrices", &useprices_obj)) {
-               const char *json_name = json_object_get_string(name_obj);
-               bool json_isdefault = json_object_get_boolean(isdefault_obj);
-               bool json_active = json_object_get_boolean(active_obj);
-               bool json_useprices = json_object_get_boolean(useprices_obj);
+            struct json_object *name_obj, *isdefault_obj, *active_obj, 
+                             *useprices_obj, *items;
+            
+            if (!json_object_object_get_ex(pricelist, "Name", &name_obj) ||
+                !json_object_object_get_ex(pricelist, "IsDefault", &isdefault_obj) ||
+                !json_object_object_get_ex(pricelist, "Active", &active_obj) ||
+                !json_object_object_get_ex(pricelist, "UsesPrices", &useprices_obj)) {
+                continue;
+            }
 
-               if (strncmp(db_name, json_name, db_name_length) == 0 &&
-                   db_isdefault == json_isdefault &&
-                   db_active == json_active &&
-                   db_useprices == json_useprices) {
-                   // Verify pricelist items count
-                   if (json_object_object_get_ex(pricelist, "Items", &items)) {
-                       int json_item_count = json_object_array_length(items);
-                       if (json_item_count != db_item_count) {
-                           verification_passed = false;
-                           break;
-                       }
-                   } else if (db_item_count != 0) {
-                       // If no pricelist items in JSON but we have them in DB
-                       verification_passed = false;
-                       break;
-                   }
-                   found = true;
-               }
-           }
-       }
-       
-       if (!found) {
-           verification_passed = false;
-           break;
-       }
-   }
+            const char *json_name = json_object_get_string(name_obj);
+            bool json_isdefault = json_object_get_boolean(isdefault_obj);
+            bool json_active = json_object_get_boolean(active_obj);
+            bool json_useprices = json_object_get_boolean(useprices_obj);
 
-   mysql_stmt_close(stmt);
-   return verification_passed;
+            if (db_name_is_null) {
+                if (json_name != NULL) continue;
+            } else if (!json_name) {
+                continue;
+            } else if (strcmp(db_name, json_name) != 0) {
+                continue;
+            }
+
+            if (db_isdefault == json_isdefault &&
+                db_active == json_active &&
+                db_useprices == json_useprices) {
+                
+                if (json_object_object_get_ex(pricelist, "Items", &items)) {
+                    int json_item_count = json_object_array_length(items);
+                    if (json_item_count == db_item_count) {
+                        found = true;
+                        break;
+                    }
+                } else if (db_item_count == 0) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        
+        if (!found) {
+            verification_passed = false;
+            break;
+        }
+    }
+
+    mysql_stmt_close(stmt);
+    return verification_passed;
 }

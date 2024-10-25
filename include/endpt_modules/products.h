@@ -18,14 +18,11 @@ struct ProductBatchResult {
     char error_message[ERROR_MESSAGE_SIZE];
 };
 
-struct Endpoint {
-    char name[256];
-    char url[512];
-};
 
 bool log_batch_status(const struct ProductBatchResult *result);
 int process_product_record(MYSQL *conn, struct json_object *record);
 int process_product_packagingcodes(MYSQL *conn, const char *productcode, struct json_object *packagingcodes);
 int process_products_batch(MYSQL *conn, const struct Endpoint *endpoint, struct json_object *batch, struct ProductBatchResult *result);
+bool verify_products_batch(MYSQL *conn, int last_id, struct json_object *original_data);
 
 #endif 

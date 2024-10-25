@@ -46,7 +46,7 @@ int process_photo_record(MYSQL *conn, struct json_object *record) {
    char tag[1024] = {0};
    int metacollectiontotalcount = 0;
    int metacollectionfirstid = 0;
-   metacollectionlastid = result->last_id;
+   int metacollectionlastid = 0;
 
    // NULL indicators
    bool null_indicators[12] = {0};

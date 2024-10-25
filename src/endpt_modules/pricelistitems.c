@@ -1,3 +1,5 @@
+#define _XOPEN_SOURCE
+#define _GNU_SOURCE
 #include "endpt_modules/pricelistitems.h"
 #include <stdbool.h>
 #include <mysql/mysql.h>

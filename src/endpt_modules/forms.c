@@ -60,7 +60,7 @@ int process_form_record(MYSQL *conn, struct json_object *record) {
    int visitid = 0;
    int metacollectiontotalcount = 0;
    int metacollectionfirstid = 0;
-   metacollectionlastid = result->last_id;
+   int metacollectionlastid = 0;
 
    // NULL indicators
    bool null_indicators[25] = {0};
@@ -404,8 +404,10 @@ int process_formitem_record(MYSQL *conn, struct json_object *record, int formid)
    return 0;
 }
 
-int process_forms_batch(MYSQL *conn, const struct Endpoint *endpoint __attribute__((unused)),
-                       struct json_object *batch, struct FormBatchResult *result) {
+int process_forms_batch(MYSQL *conn, 
+                        const struct Endpoint *endpoint __attribute__((unused)),
+                        struct json_object *batch, 
+                        struct FormBatchResult *result) {
 
    memset(result, 0, sizeof(struct FormBatchResult));
    

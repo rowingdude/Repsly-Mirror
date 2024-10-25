@@ -18,13 +18,9 @@ struct PhotoBatchResult {
     int records_failed;
     int total_count;
     bool success;
-    char error_message[MAX_ERROR_MESSAGE_LENGTH];
+    char error_message[ERROR_MESSAGE_SIZE];
 };
 
-struct Endpoint {
-    char endpoint_url[512];
-    char auth_token[256];
-};
 
 bool log_batch_status(const struct PhotoBatchResult *result);
 int process_photo_record(MYSQL *conn, struct json_object *record);
