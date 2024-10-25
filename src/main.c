@@ -46,20 +46,21 @@ int process_endpoint(MYSQL *conn, const struct Endpoint *endpoint) {
     curl_easy_setopt(curl, CURLOPT_PASSWORD, getenv("REPSLY_API_PASSWORD"));
 
     switch (endpoint->pagination_type) {
-        case NONE:
-            snprintf(url, sizeof(url), endpoint->url_format, ...);
-            break;
-        case ID:
         case TIMESTAMP:
-            snprintf(url, sizeof(url), endpoint->url_format, endpoint->meta.last_timestamp);
+            snprintf(url, sizeof(url), "%s%lld", endpoint->url_format, 
+                    endpoint->meta.last_timestamp);
             break;
         case SKIP:
-            snprintf(url, sizeof(url), endpoint->url_format, 
+            snprintf(url, sizeof(url), "%s%lld/%d", endpoint->url_format,
                     endpoint->meta.last_timestamp, endpoint->meta.skip_count);
             break;
         case DATERANGE:
-            snprintf(url, sizeof(url), endpoint->url_format, 
+            snprintf(url, sizeof(url), "%s%s/%s", endpoint->url_format,
                     endpoint->meta.date_start, endpoint->meta.date_end);
+            break;
+        default:
+            strncpy(url, endpoint->url_format, sizeof(url) - 1);
+            url[sizeof(url) - 1] = '\0';
             break;
     }
 
@@ -104,7 +105,8 @@ int main() {
         "MYSQL_PASSWORD"
     };
     
-    for (int i = 0; i < sizeof(required_env)/sizeof(required_env[0]); i++) {
+    const size_t num_required_env = sizeof(required_env)/sizeof(required_env[0]);
+    for (size_t i = 0; i < num_required_env; i++) {
         if (!getenv(required_env[i])) {
             fprintf(stderr, "Error: Required environment variable %s not set.\n", 
                     required_env[i]);

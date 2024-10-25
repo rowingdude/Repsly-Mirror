@@ -34,7 +34,7 @@ struct ClientNoteBatchResult {
 };
 
 // Function to log batch processing status
-static bool log_batch_status(const struct ClientNoteBatchResult *result);
+bool log_batch_status(const struct ClientNoteBatchResult *result);
 
 // Function to process a client note record
 int process_clientnote_record(MYSQL *conn, struct json_object *record);

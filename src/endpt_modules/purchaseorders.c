@@ -7,7 +7,7 @@
 
 unsigned long length_value = sizeof(double);
 
-static bool log_batch_status(const struct PurchaseOrderBatchResult *result) {
+bool log_batch_status(const struct PurchaseOrderBatchResult *result) {
     time_t now;
     time(&now);
     

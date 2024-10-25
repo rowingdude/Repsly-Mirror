@@ -27,6 +27,6 @@ int process_visitschedule_record(MYSQL *conn, struct json_object *record);
 bool verify_visitschedules_batch(MYSQL *conn, int last_id, struct json_object *original_data);
 
 // Static function for logging batch status (should not be exposed in header)
-static bool log_batch_status(const struct VisitScheduleBatchResult *result);
+bool log_batch_status(const struct VisitScheduleBatchResult *result);
 
 #endif

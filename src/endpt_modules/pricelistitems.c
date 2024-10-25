@@ -5,7 +5,7 @@
 #include <string.h>
 #include <time.h>
 
-static bool log_batch_status(const struct PriceListItemBatchResult *result) {
+bool log_batch_status(const struct PriceListItemBatchResult *result) {
     time_t now;
     time(&now);
     

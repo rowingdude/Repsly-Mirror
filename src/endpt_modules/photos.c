@@ -5,7 +5,7 @@
 #include <string.h>
 #include <time.h>
 
-static bool log_batch_status(const struct PhotoBatchResult *result) {
+bool log_batch_status(const struct PhotoBatchResult *result) {
    time_t now;
    time(&now);
    
@@ -185,7 +185,7 @@ int process_photo_record(MYSQL *conn, struct json_object *record) {
    return 0;
 }
 
-int process_photos_batch(MYSQL *conn, const struct Endpoint *endpoint, struct json_object *batch, struct PhotoBatchResult *result) {
+int process_photos_batch(MYSQL *conn, const struct Endpoint *endpoint  __attribute__((unused)), struct json_object *batch, struct PhotoBatchResult *result) {
     
    memset(result, 0, sizeof(struct PhotoBatchResult));
    
@@ -265,7 +265,7 @@ int process_photos_batch(MYSQL *conn, const struct Endpoint *endpoint, struct js
    return 0;
 }
 
-bool verify_photos_batch(MYSQL *conn, int last_id, struct json_object *original_data) {
+bool verify_photos_batch(MYSQL *conn, int last_id __attribute__((unused)), struct json_object *original_data) {
 
    if (!conn || !original_data) return false;
 

@@ -4,7 +4,7 @@
 #include <mysql/mysql.h>
 #include <time.h>
 
-static bool log_batch_status(const struct RepresentativeBatchResult *result) {
+bool log_batch_status(const struct RepresentativeBatchResult *result) {
     time_t now;
     time(&now);
     
