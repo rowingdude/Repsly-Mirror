@@ -22,7 +22,7 @@ bool log_batch_status(const struct ImportStatusBatchResult *result) {
     return true;
 }
 
-static int process_import_warning(MYSQL *conn, long long importjobid, struct json_object *warning) {
+int process_import_warning(MYSQL *conn, long long importjobid, struct json_object *warning) {
     MYSQL_STMT *stmt = mysql_stmt_init(conn);
     if (!stmt) return -1;
 
@@ -90,7 +90,7 @@ static int process_import_warning(MYSQL *conn, long long importjobid, struct jso
     return 0;
 }
 
-static int process_import_error(MYSQL *conn, long long importjobid, struct json_object *error) {
+int process_import_error(MYSQL *conn, long long importjobid, struct json_object *error) {
     MYSQL_STMT *stmt = mysql_stmt_init(conn);
     if (!stmt) return -1;
 

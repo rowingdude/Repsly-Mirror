@@ -24,7 +24,8 @@ size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *user
     return realsize;
 }
 
-int process_endpoint(MYSQL *conn, const struct Endpoint *endpoint) {
+int process_endpoint(MYSQL *conn __attribute__((unused)), 
+                    const struct Endpoint *endpoint) {    
     CURL *curl;
     CURLcode res;
     struct MemoryStruct chunk = {0};

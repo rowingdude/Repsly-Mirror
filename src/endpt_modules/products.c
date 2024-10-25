@@ -47,7 +47,7 @@ int process_product_record(MYSQL *conn, struct json_object *record) {
    char masterproduct[256] = {0};
    int metacollectiontotalcount = 0;
    int metacollectionfirstid = 0;
-   int metacollectionlastid = 0;
+   metacollectionlastid = result->last_id;
 
    // NULL indicators
    bool null_indicators[14] = {0};
