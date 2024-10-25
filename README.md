@@ -16,6 +16,8 @@ The **Repsly MySQL Mirror Program** is a C-based ETL (Extract, Transform, Load) 
 - MySQL Server
 - MySQL C API library
 - cURL library for handling HTTP requests
+- Repsly API credentials 
+- MySQL credentials
 
 ## Development is active
 
