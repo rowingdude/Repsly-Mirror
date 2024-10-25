@@ -20,7 +20,7 @@
 #define PHONE_SIZE 129
 #define TERRITORY_SIZE 81
 #define NOTE_SIZE 65535
-#define ERROR_MESSAGE_SIZE 256
+#define ERROR_MESSAGE_SIZE 1024
 
 struct ClientNoteBatchResult {
     int first_id;

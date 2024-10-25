@@ -6,7 +6,7 @@
 #include "../endpoints.h"
 
 #include <stdbool.h>
-#define ERROR_MESSAGE_SIZE 256
+#define ERROR_MESSAGE_SIZE 1024
 struct VisitRealizationTaskBatchResult {
     int first_id;
     int last_id;

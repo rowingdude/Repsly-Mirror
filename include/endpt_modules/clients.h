@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include "../endpoints.h"
 
-#define ERROR_MESSAGE_SIZE 256
+#define ERROR_MESSAGE_SIZE 1024
 
 struct ClientBatchResult {
     long long last_timestamp;          // Last processed timestamp

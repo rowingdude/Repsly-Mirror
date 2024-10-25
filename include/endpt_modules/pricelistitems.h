@@ -3,7 +3,7 @@
 
 #include <mysql/mysql.h>
 #include <json-c/json.h>
-#define ERROR_MESSAGE_SIZE 256
+#define ERROR_MESSAGE_SIZE 1024
 
 #include "../endpoints.h"
 

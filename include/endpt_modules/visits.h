@@ -4,7 +4,7 @@
 #include <mysql/mysql.h>
 #include <json-c/json.h>
 #include "../endpoints.h"
-#define ERROR_MESSAGE_SIZE 256
+#define ERROR_MESSAGE_SIZE 1024
 struct VisitBatchResult {
     bool success;
     long long last_timestamp;
