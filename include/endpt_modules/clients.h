@@ -29,8 +29,8 @@ typedef enum {
 int process_client_record(MYSQL *conn, struct json_object *record);
 int process_client_custom_fields(MYSQL *conn, int clientid, struct json_object *custom_fields);
 int process_client_price_lists(MYSQL *conn, int clientid, struct json_object *price_lists);
-ProcessStatus process_clients_batch(MYSQL *conn, const struct Endpoint *endpoint, struct json_object *batch, struct ClientBatchResult *result);
+ProcessStatus process_clients_batch(MYSQL *conn, const struct Endpoint *endpoint __attribute__((unused)), struct json_object *batch, struct ClientBatchResult *result);
 bool verify_clients_batch(MYSQL *conn, long long last_timestamp, struct json_object *original_data);
-void log_batch_status(const struct ClientBatchResult *result);
+bool log_batch_status(const struct ClientBatchResult *result);
 
 #endif

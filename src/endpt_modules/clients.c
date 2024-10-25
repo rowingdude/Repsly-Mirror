@@ -6,7 +6,7 @@
 #include <string.h>
 #include <time.h>
 
-void log_batch_status(const struct ClientBatchResult *result) {
+static bool log_batch_status(const struct ClientBatchResult *result) {
     time_t now;
     time(&now);
     
@@ -375,8 +375,7 @@ int process_client_record(MYSQL *conn, struct json_object *record) {
     return 0;
 }
 
-ProcessStatus process_clients_batch(MYSQL *conn, const struct Endpoint *endpoint, struct json_object *batch, struct ClientBatchResult *result) {
-    // Initialize result
+ProcessStatus process_clients_batch(MYSQL *conn, const struct Endpoint *endpoint __attribute__((unused)), struct json_object *batch, struct ClientBatchResult *result) {    // Initialize result
     memset(result, 0, sizeof(struct ClientBatchResult));
     
     // Extract metadata
