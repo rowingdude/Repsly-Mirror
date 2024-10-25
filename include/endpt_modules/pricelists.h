@@ -4,7 +4,7 @@
 #include <mysql/mysql.h>
 #include <stdbool.h>
 #include <json-c/json.h>
-
+#define ERROR_MESSAGE_SIZE 256
 struct PricelistBatchResult {
    int first_id;
    int last_id;
@@ -13,7 +13,7 @@ struct PricelistBatchResult {
    int records_failed;
    int total_count;
    bool success;
-   char error_message[256];
+   char error_message[ERROR_MESSAGE_SIZE];
 };
 
 int process_pricelist_record(MYSQL *conn, struct json_object *record);

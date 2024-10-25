@@ -47,7 +47,7 @@ int process_endpoint(MYSQL *conn, const struct Endpoint *endpoint) {
 
     switch (endpoint->pagination_type) {
         case NONE:
-            snprintf(url, sizeof(url), "%s", endpoint->url_format);
+            snprintf(url, sizeof(url), endpoint->url_format, ...);
             break;
         case ID:
         case TIMESTAMP:

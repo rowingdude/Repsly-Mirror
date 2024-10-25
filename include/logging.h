@@ -2,7 +2,7 @@
 #define LOGGING_H
 
 #include <stdbool.h>
-
+#define ERROR_MESSAGE_SIZE 256
 typedef enum {
     LOG_LEVEL_DEBUG,
     LOG_LEVEL_INFO,

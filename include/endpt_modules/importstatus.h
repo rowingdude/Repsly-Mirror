@@ -7,7 +7,7 @@
 #include <json-c/json.h>
 #include <stdbool.h>
 #include <time.h>
-
+#define ERROR_MESSAGE_SIZE 256
 // Define ImportStatusBatchResult to store the result of the batch processing
 struct ImportStatusBatchResult {
     int first_id;

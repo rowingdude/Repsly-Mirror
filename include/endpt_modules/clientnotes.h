@@ -19,6 +19,7 @@
 #define PHONE_SIZE 129
 #define TERRITORY_SIZE 81
 #define NOTE_SIZE 65535
+#define ERROR_MESSAGE_SIZE 256
 
 // Struct for holding batch processing results
 struct ClientNoteBatchResult {
@@ -29,7 +30,7 @@ struct ClientNoteBatchResult {
     int records_failed;
     int total_count;
     bool success;
-    const char *error_message;
+    char error_message[ERROR_MESSAGE_SIZE];
 };
 
 // Function to log batch processing status

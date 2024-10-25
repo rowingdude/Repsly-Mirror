@@ -393,7 +393,7 @@ ProcessStatus process_clients_batch(MYSQL *conn, const struct Endpoint *endpoint
     // Process each record in the batch
     struct json_object *records;
     if (!json_object_object_get_ex(batch, "Clients", &records)) {
-        snprintf(result->error_message, sizeof(result->error_message), 
+        snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                 "No Clients array found in response");
         return -1;
     }
@@ -405,7 +405,7 @@ ProcessStatus process_clients_batch(MYSQL *conn, const struct Endpoint *endpoint
         
         // Start transaction for each record
         if (mysql_query(conn, "START TRANSACTION")) {
-            snprintf(result->error_message, sizeof(result->error_message), 
+            snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                     "Failed to start transaction: %s", mysql_error(conn));
             return -1;
         }
@@ -441,7 +441,7 @@ ProcessStatus process_clients_batch(MYSQL *conn, const struct Endpoint *endpoint
 
         if (success) {
             if (mysql_query(conn, "COMMIT")) {
-                snprintf(result->error_message, sizeof(result->error_message), 
+                snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                         "Failed to commit transaction: %s", mysql_error(conn));
                 mysql_query(conn, "ROLLBACK");
                 return -1;
@@ -456,7 +456,7 @@ ProcessStatus process_clients_batch(MYSQL *conn, const struct Endpoint *endpoint
     // Verify batch if any records were processed
     if (result->records_processed > 0) {
         if (!verify_clients_batch(conn, result->last_timestamp, records)) {
-            snprintf(result->error_message, sizeof(result->error_message), 
+            snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                     "Batch verification failed");
             return -1;
         }

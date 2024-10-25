@@ -8,7 +8,7 @@
 #include <json-c/json.h>
 
 // Constants
-#define MAX_ERROR_MESSAGE_LENGTH 256
+#define ERROR_MESSAGE_SIZE 256
 
 // Struct Definitions
 

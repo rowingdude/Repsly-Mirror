@@ -205,7 +205,7 @@ int process_photos_batch(MYSQL *conn, const struct Endpoint *endpoint, struct js
 
    struct json_object *photos;
    if (!json_object_object_get_ex(batch, "Photos", &photos)) {
-       snprintf(result->error_message, sizeof(result->error_message), 
+       snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                "No Photos array found in response");
        return -1;
    }
@@ -216,7 +216,7 @@ int process_photos_batch(MYSQL *conn, const struct Endpoint *endpoint, struct js
        result->records_processed++;
        
        if (mysql_query(conn, "START TRANSACTION")) {
-           snprintf(result->error_message, sizeof(result->error_message), 
+           snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                    "Failed to start transaction: %s", mysql_error(conn));
            return -1;
        }
@@ -229,7 +229,7 @@ int process_photos_batch(MYSQL *conn, const struct Endpoint *endpoint, struct js
 
        if (success) {
            if (mysql_query(conn, "COMMIT")) {
-               snprintf(result->error_message, sizeof(result->error_message), 
+               snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                        "Failed to commit transaction: %s", mysql_error(conn));
                mysql_query(conn, "ROLLBACK");
                return -1;
@@ -238,7 +238,7 @@ int process_photos_batch(MYSQL *conn, const struct Endpoint *endpoint, struct js
        } else {
            mysql_query(conn, "ROLLBACK");
            result->records_failed++;
-           snprintf(result->error_message, sizeof(result->error_message), 
+           snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                    "Failed to process photo record");
        }
 
@@ -253,7 +253,7 @@ int process_photos_batch(MYSQL *conn, const struct Endpoint *endpoint, struct js
 
    if (result->records_processed > 0) {
        if (!verify_photos_batch(conn, result->last_id, photos)) {
-           snprintf(result->error_message, sizeof(result->error_message), 
+           snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                    "Batch verification failed");
            return -1;
        }

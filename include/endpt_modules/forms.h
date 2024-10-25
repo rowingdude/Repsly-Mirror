@@ -4,6 +4,7 @@
 #include <mysql/mysql.h>
 #include <stdbool.h>
 #include <json-c/json.h>
+#define ERROR_MESSAGE_SIZE 256
 
 struct FormBatchResult {
    int first_id;
@@ -13,7 +14,7 @@ struct FormBatchResult {
    int records_failed;
    int total_count;
    bool success;
-   char error_message[256];
+   char error_message[ERROR_MESSAGE_SIZE];
 };
 
 int process_form_record(MYSQL *conn, struct json_object *record);

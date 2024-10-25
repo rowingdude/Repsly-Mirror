@@ -285,7 +285,7 @@ int process_products_batch(MYSQL *conn, const struct Endpoint *endpoint,
 
    struct json_object *records;
    if (!json_object_object_get_ex(batch, "Products", &records)) {
-       snprintf(result->error_message, sizeof(result->error_message), 
+       snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                "No Products array found in response");
        return -1;
    }
@@ -296,7 +296,7 @@ int process_products_batch(MYSQL *conn, const struct Endpoint *endpoint,
        result->records_processed++;
        
        if (mysql_query(conn, "START TRANSACTION")) {
-           snprintf(result->error_message, sizeof(result->error_message), 
+           snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                    "Failed to start transaction: %s", mysql_error(conn));
            return -1;
        }
@@ -326,7 +326,7 @@ int process_products_batch(MYSQL *conn, const struct Endpoint *endpoint,
 
        if (success) {
            if (mysql_query(conn, "COMMIT")) {
-               snprintf(result->error_message, sizeof(result->error_message), 
+               snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                        "Failed to commit transaction: %s", mysql_error(conn));
                mysql_query(conn, "ROLLBACK");
                return -1;
@@ -335,7 +335,7 @@ int process_products_batch(MYSQL *conn, const struct Endpoint *endpoint,
        } else {
            mysql_query(conn, "ROLLBACK");
            result->records_failed++;
-           snprintf(result->error_message, sizeof(result->error_message), 
+           snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                    "Failed to process product record %s", productcode);
        }
 
@@ -350,7 +350,7 @@ int process_products_batch(MYSQL *conn, const struct Endpoint *endpoint,
 
    if (result->records_processed > 0) {
        if (!verify_products_batch(conn, result->last_id, records)) {
-           snprintf(result->error_message, sizeof(result->error_message), 
+           snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                    "Batch verification failed");
            return -1;
        }

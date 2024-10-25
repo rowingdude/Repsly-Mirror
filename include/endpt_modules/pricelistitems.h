@@ -3,6 +3,7 @@
 
 #include <mysql/mysql.h>
 #include <json-c/json.h>
+#define ERROR_MESSAGE_SIZE 256
 
 struct PriceListItem {
     int id;
@@ -27,7 +28,7 @@ struct PriceListItemBatchResult {
     int records_inserted;
     int records_failed;
     bool success;
-    char error_message[256];
+    char error_message[ERROR_MESSAGE_SIZE];
 };
 
 int process_pricelistitem_record(MYSQL *conn, struct json_object *record);

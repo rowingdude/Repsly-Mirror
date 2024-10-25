@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include "endpoints.h"
 
-#define ERROR_MSG_SIZE 256
+#define ERROR_MESSAGE_SIZE 256
 
 struct ClientBatchResult {
     long long last_timestamp;          // Last processed timestamp
@@ -15,7 +15,7 @@ struct ClientBatchResult {
     int records_failed;                // Total records failed
     int total_count;                   // Total records in the batch
     bool success;                      // Success flag
-    char error_message[ERROR_MSG_SIZE]; // Error message if failed
+    char error_message[ERROR_MESSAGE_SIZE]; // Error message if failed
 };
 
 typedef enum {

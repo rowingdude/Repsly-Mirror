@@ -504,7 +504,7 @@ int process_users_batch(MYSQL *conn, const struct Endpoint *endpoint,
     // Process records
     struct json_object *users;
     if (!json_object_object_get_ex(batch, "Users", &users)) {
-        snprintf(result->error_message, sizeof(result->error_message), 
+        snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                 "No Users array found in response");
         return -1;
     }
@@ -515,7 +515,7 @@ int process_users_batch(MYSQL *conn, const struct Endpoint *endpoint,
         result->records_processed++;
         
         if (mysql_query(conn, "START TRANSACTION")) {
-            snprintf(result->error_message, sizeof(result->error_message), 
+            snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                     "Failed to start transaction: %s", mysql_error(conn));
             return -1;
         }
@@ -600,7 +600,7 @@ int process_users_batch(MYSQL *conn, const struct Endpoint *endpoint,
 
         if (success) {
             if (mysql_query(conn, "COMMIT")) {
-                snprintf(result->error_message, sizeof(result->error_message), 
+                snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                         "Failed to commit transaction: %s", mysql_error(conn));
                 mysql_query(conn, "ROLLBACK");
                 return -1;
@@ -609,7 +609,7 @@ int process_users_batch(MYSQL *conn, const struct Endpoint *endpoint,
         } else {
             mysql_query(conn, "ROLLBACK");
             result->records_failed++;
-            snprintf(result->error_message, sizeof(result->error_message), 
+            snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                     "Failed to process user record");
         }
 
@@ -624,7 +624,7 @@ int process_users_batch(MYSQL *conn, const struct Endpoint *endpoint,
 
     if (result->records_processed > 0) {
         if (!verify_users_batch(conn, result->last_id, users)) {
-            snprintf(result->error_message, sizeof(result->error_message), 
+            snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                     "Batch verification failed");
             return -1;
         }

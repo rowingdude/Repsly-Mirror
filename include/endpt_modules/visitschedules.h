@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <mysql/mysql.h>
 #include <json-c/json.h>
-
+#define ERROR_MESSAGE_SIZE 256
 // Structure to hold batch processing results
 struct VisitScheduleBatchResult {
     int first_id;                // ID of the first record
@@ -14,7 +14,7 @@ struct VisitScheduleBatchResult {
     int records_failed;          // Total records failed
     int total_count;             // Total count of records in the batch
     bool success;                // Status of the batch processing
-    char error_message[256];     // Error message if any failure occurs
+    char error_message[ERROR_MESSAGE_SIZE];     // Error message if any failure occurs
 };
 
 // Function prototypes

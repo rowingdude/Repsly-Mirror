@@ -354,7 +354,7 @@ int process_clientnotes_batch(MYSQL *conn, const struct Endpoint *endpoint,
     // Process records
     struct json_object *records;
     if (!json_object_object_get_ex(batch, "ClientNotes", &records)) {
-        snprintf(result->error_message, sizeof(result->error_message), 
+        snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                 "No ClientNotes array found in response");
         return -1;
     }
@@ -374,7 +374,7 @@ int process_clientnotes_batch(MYSQL *conn, const struct Endpoint *endpoint,
     // Verify batch if any records were processed
     if (result->records_processed > 0) {
         if (!verify_clientnotes_batch(conn, result->last_id, records)) {
-            snprintf(result->error_message, sizeof(result->error_message), 
+            snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
                     "Batch verification failed");
             return -1;
         }

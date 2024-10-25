@@ -4,7 +4,7 @@
 #include <mysql/mysql.h>
 #include <stdbool.h>
 #include <json-c/json.h>
-
+#define ERROR_MESSAGE_SIZE 256
 int process_representative_record(MYSQL *conn, struct json_object *record);
 int process_representatives_batch(MYSQL *conn, const struct Endpoint *endpoint, 
                                  struct json_object *batch, 
@@ -19,7 +19,7 @@ struct RepresentativeBatchResult {
     int records_failed;
     int total_count;
     bool success;
-    char error_message[256];
+    char error_message[ERROR_MESSAGE_SIZE];
 };
 
 #endif

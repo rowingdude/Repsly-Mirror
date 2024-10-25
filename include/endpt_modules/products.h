@@ -4,7 +4,7 @@
 #include <mysql/mysql.h>
 #include <json-c/json.h>
 #include <stdbool.h>
-
+#define ERROR_MESSAGE_SIZE 256
 // Struct to store results of product batch processing
 struct ProductBatchResult {
     int first_id;
@@ -14,7 +14,7 @@ struct ProductBatchResult {
     int records_failed;
     int total_count;
     bool success;
-    char error_message[256];
+    char error_message[ERROR_MESSAGE_SIZE];
 };
 
 // Struct to hold endpoint-related metadata

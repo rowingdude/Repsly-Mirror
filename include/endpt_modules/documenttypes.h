@@ -3,14 +3,15 @@
 
 #include <mysql/mysql.h>
 #include <json-c/json.h>
-#include "endpoints.h"
+
+#define ERROR_MESSAGE_SIZE 256
 
 struct DocumentTypeBatchResult {
     bool success;
     int records_processed;
     int records_inserted;
     int records_failed;
-    char error_message[256];
+    char error_message[ERROR_MESSAGE_SIZE];
     int total_count;
 };
 
