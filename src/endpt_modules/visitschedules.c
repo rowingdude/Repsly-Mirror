@@ -25,7 +25,7 @@ int process_visitschedule_record(MYSQL *conn, struct json_object *record) {
     MYSQL_STMT *stmt = mysql_stmt_init(conn);
     if (!stmt) return -1;
 
-    const char *query = "CALL upsert_visitschedule(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const char *query = "CALL upsert_visitschedule(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     
     if (mysql_stmt_prepare(stmt, query, strlen(query))) {
         mysql_stmt_close(stmt);
@@ -60,7 +60,75 @@ int process_visitschedule_record(MYSQL *conn, struct json_object *record) {
     else
         null_indicators[0] = 1;
 
-    // ... continue extracting other fields ...
+    if (json_object_object_get_ex(record, "ClientCode", &temp))
+        strncpy(clientcode, json_object_get_string(temp), sizeof(clientcode) - 1);
+    else
+        null_indicators[1] = 1;
+
+    if (json_object_object_get_ex(record, "RepresentativeCode", &temp))
+        strncpy(representativecode, json_object_get_string(temp), sizeof(representativecode) - 1);
+    else
+        null_indicators[2] = 1;
+
+    if (json_object_object_get_ex(record, "RepresentativeName", &temp))
+        strncpy(representativename, json_object_get_string(temp), sizeof(representativename) - 1);
+    else
+        null_indicators[3] = 1;
+
+    if (json_object_object_get_ex(record, "ClientName", &temp))
+        strncpy(clientname, json_object_get_string(temp), sizeof(clientname) - 1);
+    else
+        null_indicators[4] = 1;
+
+    if (json_object_object_get_ex(record, "StreetAddress", &temp))
+        strncpy(streetaddress, json_object_get_string(temp), sizeof(streetaddress) - 1);
+    else
+        null_indicators[5] = 1;
+
+    if (json_object_object_get_ex(record, "Zip", &temp))
+        strncpy(zip, json_object_get_string(temp), sizeof(zip) - 1);
+    else
+        null_indicators[6] = 1;
+
+    if (json_object_object_get_ex(record, "ZipExt", &temp))
+        strncpy(zipext, json_object_get_string(temp), sizeof(zipext) - 1);
+    else
+        null_indicators[7] = 1;
+
+    if (json_object_object_get_ex(record, "City", &temp))
+        strncpy(city, json_object_get_string(temp), sizeof(city) - 1);
+    else
+        null_indicators[8] = 1;
+
+    if (json_object_object_get_ex(record, "State", &temp))
+        strncpy(state, json_object_get_string(temp), sizeof(state) - 1);
+    else
+        null_indicators[9] = 1;
+
+    if (json_object_object_get_ex(record, "Country", &temp))
+        strncpy(country, json_object_get_string(temp), sizeof(country) - 1);
+    else
+        null_indicators[10] = 1;
+
+    if (json_object_object_get_ex(record, "Territory", &temp))
+        strncpy(territory, json_object_get_string(temp), sizeof(territory) - 1);
+    else
+        null_indicators[11] = 1;
+
+    if (json_object_object_get_ex(record, "VisitNote", &temp))
+        strncpy(visitnote, json_object_get_string(temp), sizeof(visitnote) - 1);
+    else
+        null_indicators[12] = 1;
+
+    if (json_object_object_get_ex(record, "DueDate", &temp))
+        strncpy(duedate, json_object_get_string(temp), sizeof(duedate) - 1);
+    else
+        null_indicators[13] = 1;
+
+    if (json_object_object_get_ex(record, "MetaCollectionTotalCount", &temp))
+        metacollectiontotalcount = json_object_get_int(temp);
+    else
+        null_indicators[14] = 1;
 
     // Bind parameters
     MYSQL_BIND bind[15];
@@ -71,13 +139,82 @@ int process_visitschedule_record(MYSQL *conn, struct json_object *record) {
     bind[0].buffer_length = sizeof(scheduledateandtime);
     bind[0].is_null = &null_indicators[0];
 
-    // ... continue binding other fields ...
+    bind[1].buffer_type = MYSQL_TYPE_STRING;
+    bind[1].buffer = clientcode;
+    bind[1].buffer_length = sizeof(clientcode);
+    bind[1].is_null = &null_indicators[1];
 
+    bind[2].buffer_type = MYSQL_TYPE_STRING;
+    bind[2].buffer = representativecode;
+    bind[2].buffer_length = sizeof(representativecode);
+    bind[2].is_null = &null_indicators[2];
+
+    bind[3].buffer_type = MYSQL_TYPE_STRING;
+    bind[3].buffer = representativename;
+    bind[3].buffer_length = sizeof(representativename);
+    bind[3].is_null = &null_indicators[3];
+
+    bind[4].buffer_type = MYSQL_TYPE_STRING;
+    bind[4].buffer = clientname;
+    bind[4].buffer_length = sizeof(clientname);
+    bind[4].is_null = &null_indicators[4];
+
+    bind[5].buffer_type = MYSQL_TYPE_STRING;
+    bind[5].buffer = streetaddress;
+    bind[5].buffer_length = sizeof(streetaddress);
+    bind[5].is_null = &null_indicators[5];
+
+    bind[6].buffer_type = MYSQL_TYPE_STRING;
+    bind[6].buffer = zip;
+    bind[6].buffer_length = sizeof(zip);
+    bind[6].is_null = &null_indicators[6];
+
+    bind[7].buffer_type = MYSQL_TYPE_STRING;
+    bind[7].buffer = zipext;
+    bind[7].buffer_length = sizeof(zipext);
+    bind[7].is_null = &null_indicators[7];
+
+    bind[8].buffer_type = MYSQL_TYPE_STRING;
+    bind[8].buffer = city;
+    bind[8].buffer_length = sizeof(city);
+    bind[8].is_null = &null_indicators[8];
+
+    bind[9].buffer_type = MYSQL_TYPE_STRING;
+    bind[9].buffer = state;
+    bind[9].buffer_length = sizeof(state);
+    bind[9].is_null = &null_indicators[9];
+
+    bind[10].buffer_type = MYSQL_TYPE_STRING;
+    bind[10].buffer = country;
+    bind[10].buffer_length = sizeof(country);
+    bind[10].is_null = &null_indicators[10];
+
+    bind[11].buffer_type = MYSQL_TYPE_STRING;
+    bind[11].buffer = territory;
+    bind[11].buffer_length = sizeof(territory);
+    bind[11].is_null = &null_indicators[11];
+
+    bind[12].buffer_type = MYSQL_TYPE_STRING;
+    bind[12].buffer = visitnote;
+    bind[12].buffer_length = sizeof(visitnote);
+    bind[12].is_null = &null_indicators[12];
+
+    bind[13].buffer_type = MYSQL_TYPE_STRING;
+    bind[13].buffer = duedate;
+    bind[13].buffer_length = sizeof(duedate);
+    bind[13].is_null = &null_indicators[13];
+
+    bind[14].buffer_type = MYSQL_TYPE_LONG;
+    bind[14].buffer = &metacollectiontotalcount;
+    bind[14].is_null = &null_indicators[14];
+
+    // Bind parameters to the prepared statement
     if (mysql_stmt_bind_param(stmt, bind)) {
         mysql_stmt_close(stmt);
         return -1;
     }
 
+    // Execute the statement
     if (mysql_stmt_execute(stmt)) {
         mysql_stmt_close(stmt);
         return -1;
@@ -87,7 +224,7 @@ int process_visitschedule_record(MYSQL *conn, struct json_object *record) {
     return 0;
 }
 
-int process_visitschedules_batch(MYSQL *conn, const struct Endpoint *endpoint,
+int process_visitschedules_batch(MYSQL *conn, const struct Endpoint *endpoint __attribute__((unused)),
                                 struct json_object *batch,
                                 struct VisitScheduleBatchResult *result) {
     // Initialize result
@@ -159,7 +296,7 @@ int process_visitschedules_batch(MYSQL *conn, const struct Endpoint *endpoint,
     return 0;
 }
 
-bool verify_visitschedules_batch(MYSQL *conn, int last_id, struct json_object *original_data) {
+bool verify_visitschedules_batch(MYSQL *conn, int last_id __attribute__((unused)), struct json_object *original_data) {
     if (!conn || !original_data) return false;
 
     const char *query = "SELECT vs.scheduledateandtime, vs.clientcode, vs.representativecode, "

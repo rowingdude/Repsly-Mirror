@@ -38,15 +38,11 @@ int process_pricelist_record(MYSQL *conn, struct json_object *record) {
        return -1;
    }
 
-   // Field variables
    char name[256] = {0};
    bool isdefault = false;
    bool active = false;
    bool useprices = false;
-   unsigned long db_name_length = 0;
-   // int metacollectionlastid = 0;
 
-   // NULL indicators
    bool null_indicators[4] = {0};
 
    struct json_object *temp;

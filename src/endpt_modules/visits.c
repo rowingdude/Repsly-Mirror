@@ -22,7 +22,7 @@ bool log_batch_status(const struct VisitBatchResult *result) {
     return true;
 }
 
-int process_visits_batch(MYSQL *conn, const struct Endpoint *endpoint, 
+int process_visits_batch(MYSQL *conn, const struct Endpoint *endpoint __attribute__((unused)), 
                         struct json_object *batch, struct VisitBatchResult *result) {
     // Initialize result
     memset(result, 0, sizeof(struct VisitBatchResult));

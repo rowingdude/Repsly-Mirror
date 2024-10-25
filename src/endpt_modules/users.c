@@ -4,6 +4,12 @@
 #include <time.h>
 #include <mysql/mysql.h>
 
+
+int process_user_territory_record(MYSQL *conn, struct json_object *record);
+int process_user_attribute_record(MYSQL *conn, struct json_object *record); 
+int process_user_permission_record(MYSQL *conn, struct json_object *record);
+
+
 bool log_batch_status(const struct UserBatchResult *result) {
     time_t now;
     time(&now);
@@ -481,8 +487,10 @@ int process_user_record(MYSQL *conn, struct json_object *record) {
 }
 
 
-int process_users_batch(MYSQL *conn, const struct Endpoint *endpoint,
-                       struct json_object *batch, struct UserBatchResult *result) {
+int process_users_batch(MYSQL *conn,
+    const struct Endpoint *endpoint __attribute__((unused)),
+    struct json_object *batch, struct UserBatchResult *result) {
+
     // Initialize result
     memset(result, 0, sizeof(struct UserBatchResult));
     
@@ -551,21 +559,18 @@ int process_users_batch(MYSQL *conn, const struct Endpoint *endpoint,
                         json_object_put(territory_obj);
                     }
                 }
-
-                // Process attributes if present
                 struct json_object *attributes;
                 if (json_object_object_get_ex(record, "Attributes", &attributes)) {
-                    struct json_object *attr_key;
                     json_object_object_foreach(attributes, key, val) {
                         struct json_object *attr_obj = json_object_new_object();
-                        
+
                         json_object_object_add(attr_obj, "UserID", 
                             json_object_new_string(user_id));
                         json_object_object_add(attr_obj, "Title", 
                             json_object_new_string(key));
                         json_object_object_add(attr_obj, "Value", 
                             json_object_get(val));
-                            
+
                         if (process_user_attribute_record(conn, attr_obj) != 0) {
                             success = false;
                         }
@@ -636,7 +641,11 @@ int process_users_batch(MYSQL *conn, const struct Endpoint *endpoint,
     return 0;
 }
 
-bool verify_users_batch(MYSQL *conn, int last_id, struct json_object *original_data) {
+bool verify_users_batch(MYSQL *conn,
+    int last_id __attribute__((unused)), 
+    struct json_object *original_data) {
+
+        
     if (!conn || !original_data) return false;
 
     const char *query = "SELECT u.id, u.code, u.name, u.email, "

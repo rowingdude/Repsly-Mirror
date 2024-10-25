@@ -27,8 +27,8 @@ int process_form_record(MYSQL *conn, struct json_object *record) {
    MYSQL_STMT *stmt = mysql_stmt_init(conn);
    if (!stmt) return -1;
 
-   const char *query = "CALL upsert_form(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-   
+   const char *query = "CALL upsert_form(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";   
+
    if (mysql_stmt_prepare(stmt, query, strlen(query))) {
        mysql_stmt_close(stmt);
        return -1;
@@ -63,7 +63,7 @@ int process_form_record(MYSQL *conn, struct json_object *record) {
    int metacollectionlastid = 0;
 
    // NULL indicators
-   bool null_indicators[25] = {0};
+   bool null_indicators[26] = {0};
 
    struct json_object *temp;
 
@@ -197,7 +197,7 @@ int process_form_record(MYSQL *conn, struct json_object *record) {
    else
        null_indicators[24] = 1;
 
-   MYSQL_BIND bind[25];
+   MYSQL_BIND bind[26];
    memset(bind, 0, sizeof(bind));
 
    bind[0].buffer_type = MYSQL_TYPE_LONG;
@@ -318,6 +318,10 @@ int process_form_record(MYSQL *conn, struct json_object *record) {
    bind[24].buffer_type = MYSQL_TYPE_LONG;
    bind[24].buffer = &metacollectionfirstid;
    bind[24].is_null = &null_indicators[24];
+
+   bind[25].buffer_type = MYSQL_TYPE_LONG;
+   bind[25].buffer = &metacollectionlastid; 
+   bind[25].is_null = &null_indicators[25];
 
    if (mysql_stmt_bind_param(stmt, bind)) {
        mysql_stmt_close(stmt);

@@ -117,7 +117,7 @@ int process_visitrealizationtask_record(MYSQL *conn, struct json_object *record)
     return 0;
 }
 
-int process_visitrealizationtasks_batch(MYSQL *conn, const struct Endpoint *endpoint,
+int process_visitrealizationtasks_batch(MYSQL *conn, const struct Endpoint *endpoint __attribute__((unused)),
                                        struct json_object *batch,
                                        struct VisitRealizationTaskBatchResult *result) {
     // Initialize result
@@ -195,7 +195,7 @@ int process_visitrealizationtasks_batch(MYSQL *conn, const struct Endpoint *endp
     return 0;
 }
 
-bool verify_visitrealizationtasks_batch(MYSQL *conn, int last_id, struct json_object *original_data) {
+bool verify_visitrealizationtasks_batch(MYSQL *conn, int last_id __attribute__((unused)), struct json_object *original_data) {
     if (!conn || !original_data) return false;
 
     const char *query = "SELECT vrt.scheduleid, vrt.entityid, vrt.tasktype, "
@@ -280,7 +280,7 @@ bool verify_visitrealizationtasks_batch(MYSQL *conn, int last_id, struct json_ob
                     
                     if (json_object_object_get_ex(task, "TaskNote", &tasknote_obj)) {
                         const char *json_note = json_object_get_string(tasknote_obj);
-                        if ((json_note && strlen(json_note) != db_note_length)) {
+                        if ((json_note && strlen(json_note) != (size_t)db_note_length)) {
                             verification_passed = false;
                             break;
                         }

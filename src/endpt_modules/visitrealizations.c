@@ -265,13 +265,12 @@ int process_visitrealization_record(MYSQL *conn, struct json_object *record) {
     return 0;
 }
 
-int process_visitrealizations_batch(MYSQL *conn, const struct Endpoint *endpoint,
-                                   struct json_object *batch,
-                                   struct VisitRealizationBatchResult *result) {
-    // Initialize result
+int process_visitrealizations_batch(MYSQL *conn,
+    const struct Endpoint *endpoint __attribute__((unused)),
+    struct json_object *batch, struct VisitRealizationBatchResult *result) {
+
     memset(result, 0, sizeof(struct VisitRealizationBatchResult));
     
-    // Extract metadata
     struct json_object *meta;
     if (json_object_object_get_ex(batch, "MetaCollectionResult", &meta)) {
         struct json_object *count_obj, *firstid_obj, *lastid_obj;
@@ -286,7 +285,6 @@ int process_visitrealizations_batch(MYSQL *conn, const struct Endpoint *endpoint
             result->last_id = json_object_get_int(lastid_obj);
     }
 
-    // Process records
     struct json_object *realizations;
     if (!json_object_object_get_ex(batch, "VisitRealizations", &realizations)) {
         snprintf(result->error_message, ERROR_MESSAGE_SIZE,  
@@ -343,7 +341,10 @@ int process_visitrealizations_batch(MYSQL *conn, const struct Endpoint *endpoint
     return 0;
 }
 
-bool verify_visitrealizations_batch(MYSQL *conn, int last_id, struct json_object *original_data) {
+bool verify_visitrealizations_batch(MYSQL *conn, 
+    int last_id __attribute__((unused)),
+    struct json_object *original_data) {
+        
     if (!conn || !original_data) return false;
 
     const char *query = "SELECT vr.scheduleid, vr.employeeid, vr.placeid, "
